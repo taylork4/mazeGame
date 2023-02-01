@@ -44,8 +44,9 @@ def grid(w, h):
         colorRow = []
         vert += 22
         for j in range(0, h):
+            colo = random.randint(0, 4)
             line.append(pygame.Rect(hori, vert, 22, 22))
-            colorRow.append(99)
+            colorRow.append(colo)
             hori += 22
         hori = 0
         maze.append(line)
@@ -66,7 +67,6 @@ red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
 orange = (255, 165, 0)
-colors = [red, green, blue, orange, white]
 
 # Create a rectangle with the size 10x10 at the position (100, 100)
 rect = pygame.Rect(10, 10, 10, 10)
@@ -109,22 +109,16 @@ def gameloop():
         # pygame.draw.rect(screen, red, (0,0), 5, 0)
         for i in range(0, 20):
             for j in range(0,20):
-                colo = random.randint(0, 4)
-                if (colo == 0):
+                if (mazeColor[i][j] == 0):
                     pygame.draw.rect(screen, red, maze[i][j])
-                    mazeColor[i][j] = 0
-                if (colo == 1):
+                if (mazeColor[i][j] == 1):
                     pygame.draw.rect(screen, green, maze[i][j])
-                    mazeColor[i][j] = 1
-                if (colo == 2):
+                if (mazeColor[i][j] == 2):
                     pygame.draw.rect(screen, blue, maze[i][j])
-                    mazeColor[i][j] = 2
-                if (colo == 3):
+                if (mazeColor[i][j] == 3):
                     pygame.draw.rect(screen, orange, maze[i][j])
-                    mazeColor[i][j] = 3
-                if (colo == 4):
+                if (mazeColor[i][j] == 4):
                     pygame.draw.rect(screen, white, maze[i][j])
-                    mazeColor[i][j] = 4
 
         #color logic, Chase Kerr
         neighborsCount = 0
@@ -149,9 +143,9 @@ def gameloop():
                     
 
         
-        pygame.draw.circle(screen, black, (rect.x, rect.y), 15, 10)
+        pygame.draw.circle(screen, black, (rect.x, rect.y), 10, 10)
         #draw player circle on the screen
-        pygame.draw.circle(screen, red, (rect.x, rect.y), 10, 0)
+        pygame.draw.circle(screen, red, (rect.x, rect.y), 5, 0)
 
         # Update the screen
         pygame.display.update()
