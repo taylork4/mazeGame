@@ -31,6 +31,7 @@ import random
 # Initialize pygame
 pygame.init()
 maze = []
+mazeColor = []
 
 # Set the display window size
 screen = pygame.display.set_mode((500, 500))
@@ -40,12 +41,15 @@ def grid(w, h):
     vert = 0
     for i in range(0, w):
         line = []
+        colorRow = []
         vert += 22
         for j in range(0, h):
             line.append(pygame.Rect(hori, vert, 22, 22))
+            colorRow.append(99)
             hori += 22
         hori = 0
         maze.append(line)
+        mazeColor.append(colorRow)
         # print(line)
 
     return maze
@@ -62,6 +66,7 @@ red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
 orange = (255, 165, 0)
+colors = [red, green, blue, orange, white]
 
 # Create a rectangle with the size 10x10 at the position (100, 100)
 rect = pygame.Rect(10, 10, 10, 10)
@@ -89,6 +94,7 @@ frame_rate = 10
 def gameloop():
 # Run the game loop
     running = True
+    loadGame = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -103,15 +109,45 @@ def gameloop():
         # pygame.draw.rect(screen, red, (0,0), 5, 0)
         for i in range(0, 20):
             for j in range(0,20):
-                colo = random.randint(0, 3)
+                colo = random.randint(0, 4)
                 if (colo == 0):
                     pygame.draw.rect(screen, red, maze[i][j])
+                    mazeColor[i][j] = 0
                 if (colo == 1):
                     pygame.draw.rect(screen, green, maze[i][j])
+                    mazeColor[i][j] = 1
                 if (colo == 2):
                     pygame.draw.rect(screen, blue, maze[i][j])
+                    mazeColor[i][j] = 2
                 if (colo == 3):
                     pygame.draw.rect(screen, orange, maze[i][j])
+                    mazeColor[i][j] = 3
+                if (colo == 4):
+                    pygame.draw.rect(screen, white, maze[i][j])
+                    mazeColor[i][j] = 4
+
+        #color logic, Chase Kerr
+        neighborsCount = 0
+        for i in range(0,20):
+            for j in range(0,20):
+                #checks left neighbor
+                if (i - 1 > 0 and mazeColor[i-1][j] != 4):
+                    neighborsCount += 1
+                #checks right neighbor
+                if (i + 1 < 20 and mazeColor[i+1][j] != 4):
+                    neighborsCount += 1
+                #checks lower neighbor
+                if (j - 1 > 0 and mazeColor[i][j-1] != 4):
+                    neighborsCount += 1
+                #checks upper neighbor
+                if (j + 1 < 20 and mazeColor[i][j+1] != 4):
+                    neighborsCount += 1
+                #if 3 neighbors, rectangle is reborn
+                if (neighborsCount == 3 and mazeColor[i][j] == 4):
+                    pygame.draw.rect(screen, red, maze[i][j])
+                    mazeColor == 0
+                    
+
         
         pygame.draw.circle(screen, black, (rect.x, rect.y), 15, 10)
         #draw player circle on the screen
