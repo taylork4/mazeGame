@@ -24,7 +24,13 @@ Use the Google Style Guide (https://google.github.io/styleguide/) when you have 
 ***********************************************************************************************************************************
 You must demo your project in class on the due date for full points (10)
 '''
-
+'''
+Still need to do
+* mouse click to kill rectangle
+* collision detection for non-white rectangles
+* win condition for in bottom right corner
+* 
+'''
 import pygame
 import random
 
@@ -32,9 +38,11 @@ import random
 pygame.init()
 maze = []
 mazeColor = []
+width = 22
+height = width
 
-# Set the display window size
-screen = pygame.display.set_mode((500, 500))
+# Set the display window size, Cameron Snoap, Chase Kerr
+screen = pygame.display.set_mode((484, 484))
 
 def grid(w, h):
     hori = 0
@@ -42,12 +50,12 @@ def grid(w, h):
     for i in range(0, w):
         line = []
         colorRow = []
-        vert += 22
+        vert += height
         for j in range(0, h):
             colo = random.randint(0, 4)
-            line.append(pygame.Rect(hori, vert, 22, 22))
+            line.append(pygame.Rect(hori, vert, width, height))
             colorRow.append(colo)
-            hori += 22
+            hori += width
         hori = 0
         maze.append(line)
         mazeColor.append(colorRow)
@@ -60,7 +68,7 @@ grid(20, 20)
 # Set the display window size
 screen = pygame.display.set_mode((500, 500))
 
-# Set the red of the rectangle
+# Set the red of the rectangle, Cameron Snoap
 white = (255, 255, 255)
 black = (0, 0, 0)
 red = (255, 0, 0)
@@ -69,23 +77,23 @@ blue = (0, 0, 255)
 orange = (255, 165, 0)
 
 # Create a rectangle with the size 10x10 at the position (100, 100)
-rect = pygame.Rect(10, 10, 10, 10)
+rect = pygame.Rect(11, 33, 0, 0)
 
-# Move the rectangle with the arrow keys
+# Move the circle with the arrow keys, Cameron Snoap
 def handle_keys():
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
         if rect.y > 10:
-            rect.y -= 20
+            rect.y -= 22
     if keys[pygame.K_DOWN]:
         if rect.y < 490:
-            rect.y += 20
+            rect.y += 22
     if keys[pygame.K_LEFT]:
         if rect.x > 10:
-            rect.x -= 20
+            rect.x -= 22
     if keys[pygame.K_RIGHT]:
         if rect.x < 490:
-            rect.x += 20
+            rect.x += 22
 
 # Set the frame rate
 clock = pygame.time.Clock()
@@ -105,8 +113,7 @@ def gameloop():
         # Clear the screen
         screen.fill((255, 255, 255))
 
-        # Draw the rectangle on the screen
-        # pygame.draw.rect(screen, red, (0,0), 5, 0)
+        # Draw the rectangle on the screen, Kyle Taylor
         for i in range(0, 20):
             for j in range(0,20):
                 if (mazeColor[i][j] == 0):
@@ -136,18 +143,34 @@ def gameloop():
                 #checks upper neighbor
                 if (j + 1 < 20 and mazeColor[i][j+1] != 4):
                     neighborsCount += 1
-                #if 3 neighbors and alive, rectangle is reborn
+                #checks upper diagonal 1 neighbor
+                if (j - 1 > 0 and i - 1 > 0 and mazeColor[i-1][j-1] != 4):
+                    neighborsCount += 1
+                #checks upper diagonal 2 neighbor
+                if (j - 1 > 0 and i + 1 < 20 and mazeColor[i+1][j-1] != 4):
+                    neighborsCount += 1
+                #checks lower diagonal 1 neighbor
+                if (j + 1 < 20 and i - 1 > 0 and mazeColor[i-1][j+1] != 4):
+                    neighborsCount += 1
+                #checks lower diagonal 2 neighbor
+                if (j + 1 < 20 and i + 1 < 20 and mazeColor[i+1][j+1] != 4):
+                    neighborsCount += 1
+                #if 3 neighbors and dead, rectangle is reborn
                 if (neighborsCount == 3 and mazeColor[i][j] == 4):
                     pygame.draw.rect(screen, red, maze[i][j])
-                    mazeColor == 0
-                #if < 2 neighbors and alive, rectangle dies
-                if (neighborsCount < 2 and mazeColor[i][j] != 4):
+                    mazeColor[i][j] = 0
+                #if < 1 neighbors and alive, rectangle dies
+                if (neighborsCount < 1 and mazeColor[i][j] != 4):
                     pygame.draw.rect(screen, white, maze[i][j])
-                    mazeColor == 4
-                #if > 3 neighbors and alive, rectangle dies
-                if (neighborsCount > 3 and mazeColor[i][j] != 4):
+                    mazeColor[i][j] = 4
+                #if > 4 neighbors and alive, rectangle dies
+                if (neighborsCount > 4 and mazeColor[i][j] != 4):
                     pygame.draw.rect(screen, white, maze[i][j])
-                    mazeColor == 4
+                    mazeColor[i][j] = 4
+                #maze[19][19] and maze[0][0] are always dead
+                if (i == 19 and j == 19 or i == 0 and j == 0):
+                    pygame.draw.rect(screen, black, maze[i][j])
+                    mazeColor[i][j] = 4
                 neighborsCount = 0
                     
 
