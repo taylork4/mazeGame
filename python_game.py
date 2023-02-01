@@ -26,20 +26,42 @@ You must demo your project in class on the due date for full points (10)
 '''
 
 import pygame
+import random
 
 # Initialize pygame
 pygame.init()
+maze = []
+
+# Set the display window size
+screen = pygame.display.set_mode((500, 500))
+
+def grid(w, h):
+    hori = 0
+    vert = 0
+    for i in range(0, w):
+        line = []
+        vert += 22
+        for j in range(0, h):
+            line.append(pygame.Rect(hori, vert, 22, 22))
+            hori += 22
+        hori = 0
+        maze.append(line)
+        # print(line)
+
+    return maze
+
+grid(20, 20)
 
 # Set the display window size
 screen = pygame.display.set_mode((500, 500))
 
 # Set the red of the rectangle
-red = (255, 0, 0)
+white = (255, 255, 255)
 black = (0, 0, 0)
-# sqr = pygame.Rect(0, 0, 20, 20)
-# def grid(l, t, w, h):
-
-
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
+orange = (255, 165, 0)
 
 # Create a rectangle with the size 10x10 at the position (100, 100)
 rect = pygame.Rect(10, 10, 10, 10)
@@ -79,7 +101,19 @@ def gameloop():
 
         # Draw the rectangle on the screen
         # pygame.draw.rect(screen, red, (0,0), 5, 0)
+        for i in range(0, 20):
+            for j in range(0,20):
+                colo = random.randint(0, 3)
+                if (colo == 0):
+                    pygame.draw.rect(screen, red, maze[i][j])
+                if (colo == 1):
+                    pygame.draw.rect(screen, green, maze[i][j])
+                if (colo == 2):
+                    pygame.draw.rect(screen, blue, maze[i][j])
+                if (colo == 3):
+                    pygame.draw.rect(screen, orange, maze[i][j])
         
+        pygame.draw.circle(screen, black, (rect.x, rect.y), 15, 10)
         #draw player circle on the screen
         pygame.draw.circle(screen, red, (rect.x, rect.y), 10, 0)
 
