@@ -136,10 +136,19 @@ def gameloop():
                 #checks upper neighbor
                 if (j + 1 < 20 and mazeColor[i][j+1] != 4):
                     neighborsCount += 1
-                #if 3 neighbors, rectangle is reborn
+                #if 3 neighbors and alive, rectangle is reborn
                 if (neighborsCount == 3 and mazeColor[i][j] == 4):
                     pygame.draw.rect(screen, red, maze[i][j])
                     mazeColor == 0
+                #if < 2 neighbors and alive, rectangle dies
+                if (neighborsCount < 2 and mazeColor[i][j] != 4):
+                    pygame.draw.rect(screen, white, maze[i][j])
+                    mazeColor == 4
+                #if > 3 neighbors and alive, rectangle dies
+                if (neighborsCount > 3 and mazeColor[i][j] != 4):
+                    pygame.draw.rect(screen, white, maze[i][j])
+                    mazeColor == 4
+                neighborsCount = 0
                     
 
         
