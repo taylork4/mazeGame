@@ -42,7 +42,7 @@ width = 22
 height = width
 
 # Set the display window size, Cameron Snoap, Chase Kerr
-screen = pygame.display.set_mode((484, 484))
+screen = pygame.display.set_mode((440, 440))
 
 def grid(w, h):
     hori = 0
@@ -50,12 +50,12 @@ def grid(w, h):
     for i in range(0, w):
         line = []
         colorRow = []
-        vert += height
         for j in range(0, h):
             colo = random.randint(0, 4)
             line.append(pygame.Rect(hori, vert, width, height))
             colorRow.append(colo)
             hori += width
+        vert += height
         hori = 0
         maze.append(line)
         mazeColor.append(colorRow)
@@ -64,9 +64,6 @@ def grid(w, h):
     return maze
 
 grid(20, 20)
-
-# Set the display window size
-screen = pygame.display.set_mode((500, 500))
 
 # Set the red of the rectangle, Cameron Snoap
 white = (255, 255, 255)
@@ -77,22 +74,22 @@ blue = (0, 0, 255)
 orange = (255, 165, 0)
 
 # Create a rectangle with the size 10x10 at the position (100, 100)
-rect = pygame.Rect(11, 33, 0, 0)
+rect = pygame.Rect(11, 11, 0, 0)
 
 # Move the circle with the arrow keys, Cameron Snoap
 def handle_keys():
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
-        if rect.y > 10:
+        if rect.y > 22:
             rect.y -= 22
     if keys[pygame.K_DOWN]:
-        if rect.y < 490:
+        if rect.y < 418:
             rect.y += 22
     if keys[pygame.K_LEFT]:
-        if rect.x > 10:
+        if rect.x > 22:
             rect.x -= 22
     if keys[pygame.K_RIGHT]:
-        if rect.x < 490:
+        if rect.x < 418:
             rect.x += 22
 
 # Set the frame rate
