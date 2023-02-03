@@ -33,6 +33,7 @@ Still need to do
 '''
 import pygame
 import random
+import math
 
 # Initialize pygame
 pygame.init()
@@ -76,23 +77,27 @@ orange = (255, 165, 0)
 # Create a rectangle with the size 10x10 at the position (100, 100)
 rect = pygame.Rect(11, 11, 0, 0)
 
-#collision detection
+# Collision detection (Cameron Snoap)
 def collistion_detection(direction):
-    if (direction == "left" and screen.get_at((rect.x-22, rect.y)) == white):
+    if (direction == "left" and (screen.get_at((rect.x-22, rect.y)) == white or screen.get_at((rect.x-22, rect.y)) == black)):
         return True
-    if (direction == "right" and screen.get_at((rect.x+22, rect.y)) == white):
+    if (direction == "right" and (screen.get_at((rect.x+22, rect.y)) == white or screen.get_at((rect.x+22, rect.y)) == black)):
         return True
-    if (direction == "up" and screen.get_at((rect.x, rect.y-22)) == white):
+    if (direction == "up" and (screen.get_at((rect.x, rect.y-22)) == white or screen.get_at((rect.x, rect.y-22)) == black)):
         return True
-    if (direction == "down" and screen.get_at((rect.x, rect.y+22)) == white):
+    if (direction == "down" and (screen.get_at((rect.x, rect.y+22)) == white or screen.get_at((rect.x, rect.y+22)) == black)):
         return True
     else:
         return False
+
+#gets mouse position, Cameron Snoap
+def get_mouse_pos():
+    x, y = pygame.mouse.get_pos()
+    return x, y
     
 
 # Move the circle with the arrow keys, Cameron Snoap
 def handle_keys():
-    print(rect.x, rect.y) #testing
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
         if rect.y > 22 and collistion_detection("up"):
@@ -107,6 +112,16 @@ def handle_keys():
         if rect.x < 418 and collistion_detection("right"):
             rect.x += 22
 
+#kills a square (makes them disappear), Cameron Snoap
+def kill_square():
+    mouse_presses = pygame.mouse.get_pressed()
+    if mouse_presses[0]: #mouse left click
+        x, y = get_mouse_pos()
+        x = math.trunc(x/22)
+        y = math.trunc(y/22)
+        pygame.draw.rect(screen, white, maze[y][x])
+        mazeColor[y][x] = 4
+
 # Set the frame rate
 clock = pygame.time.Clock()
 frame_rate = 10
@@ -120,6 +135,7 @@ def gameloop():
             if event.type == pygame.QUIT:
                 running = False
 
+        kill_square()
         handle_keys()
 
         # Clear the screen
@@ -184,7 +200,6 @@ def gameloop():
                     pygame.draw.rect(screen, black, maze[i][j])
                     mazeColor[i][j] = 4
                 neighborsCount = 0
-                    
 
         
         pygame.draw.circle(screen, black, (rect.x, rect.y), 10, 10)
