@@ -143,10 +143,13 @@ def kill_square():
 clock = pygame.time.Clock()
 frame_rate = 10
 
+
 def gameloop():
 # Run the game loop
     running = True
-    loadGame = True
+    #color logic check variable
+    colorLogic = True
+    colorLogicCount = 0
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -173,50 +176,62 @@ def gameloop():
                     pygame.draw.rect(screen, white, maze[i][j])
 
         #color logic, Chase Kerr
-        neighborsCount = 0
-        for i in range(0,20):
-            for j in range(0,20):
-                #checks left neighbor
-                if (i - 1 > 0 and mazeColor[i-1][j] != 4):
-                    neighborsCount += 1
-                #checks right neighbor
-                if (i + 1 < 20 and mazeColor[i+1][j] != 4):
-                    neighborsCount += 1
-                #checks lower neighbor
-                if (j - 1 > 0 and mazeColor[i][j-1] != 4):
-                    neighborsCount += 1
-                #checks upper neighbor
-                if (j + 1 < 20 and mazeColor[i][j+1] != 4):
-                    neighborsCount += 1
-                #checks upper diagonal 1 neighbor
-                if (j - 1 > 0 and i - 1 > 0 and mazeColor[i-1][j-1] != 4):
-                    neighborsCount += 1
-                #checks upper diagonal 2 neighbor
-                if (j - 1 > 0 and i + 1 < 20 and mazeColor[i+1][j-1] != 4):
-                    neighborsCount += 1
-                #checks lower diagonal 1 neighbor
-                if (j + 1 < 20 and i - 1 > 0 and mazeColor[i-1][j+1] != 4):
-                    neighborsCount += 1
-                #checks lower diagonal 2 neighbor
-                if (j + 1 < 20 and i + 1 < 20 and mazeColor[i+1][j+1] != 4):
-                    neighborsCount += 1
-                #if 3 neighbors and dead, rectangle is reborn
-                if (neighborsCount == 3 and mazeColor[i][j] == 4):
-                    pygame.draw.rect(screen, red, maze[i][j])
-                    mazeColor[i][j] = 0
-                #if < 1 neighbors and alive, rectangle dies
-                if (neighborsCount < 1 and mazeColor[i][j] != 4):
-                    pygame.draw.rect(screen, white, maze[i][j])
-                    mazeColor[i][j] = 4
-                #if > 4 neighbors and alive, rectangle dies
-                if (neighborsCount > 4 and mazeColor[i][j] != 4):
-                    pygame.draw.rect(screen, white, maze[i][j])
-                    mazeColor[i][j] = 4
-                #maze[19][19] and maze[0][0] are always dead
-                if (i == 19 and j == 19 or i == 0 and j == 0):
-                    pygame.draw.rect(screen, black, maze[i][j])
-                    mazeColor[i][j] = 4
-                neighborsCount = 0
+        #this will turn off once the colors have stabilized, so the mouse killing of squares doesn't end up creating more
+        
+        mazeColorCheck = mazeColor #check variable to compare current color set against previous
+        if colorLogic:
+            neighborsCount = 0
+            for i in range(0,20):
+                for j in range(0,20):
+                    #checks left neighbor
+                    if (i - 1 > 0 and mazeColor[i-1][j] != 4):
+                        neighborsCount += 1
+                    #checks right neighbor
+                    if (i + 1 < 20 and mazeColor[i+1][j] != 4):
+                        neighborsCount += 1
+                    #checks lower neighbor
+                    if (j - 1 > 0 and mazeColor[i][j-1] != 4):
+                        neighborsCount += 1
+                    #checks upper neighbor
+                    if (j + 1 < 20 and mazeColor[i][j+1] != 4):
+                        neighborsCount += 1
+                    #checks upper diagonal 1 neighbor
+                    if (j - 1 > 0 and i - 1 > 0 and mazeColor[i-1][j-1] != 4):
+                        neighborsCount += 1
+                    #checks upper diagonal 2 neighbor
+                    if (j - 1 > 0 and i + 1 < 20 and mazeColor[i+1][j-1] != 4):
+                        neighborsCount += 1
+                    #checks lower diagonal 1 neighbor
+                    if (j + 1 < 20 and i - 1 > 0 and mazeColor[i-1][j+1] != 4):
+                        neighborsCount += 1
+                    #checks lower diagonal 2 neighbor
+                    if (j + 1 < 20 and i + 1 < 20 and mazeColor[i+1][j+1] != 4):
+                        neighborsCount += 1
+                    #if 3 neighbors and dead, rectangle is reborn
+                    if (neighborsCount == 3 and mazeColor[i][j] == 4):
+                        pygame.draw.rect(screen, red, maze[i][j])
+                        mazeColor[i][j] = 0
+                    #if < 1 neighbors and alive, rectangle dies
+                    if (neighborsCount < 1 and mazeColor[i][j] != 4):
+                        pygame.draw.rect(screen, white, maze[i][j])
+                        mazeColor[i][j] = 4
+                    #if > 4 neighbors and alive, rectangle dies
+                    if (neighborsCount > 4 and mazeColor[i][j] != 4):
+                        pygame.draw.rect(screen, white, maze[i][j])
+                        mazeColor[i][j] = 4
+                    #maze[19][19] and maze[0][0] are always dead
+                    if (i == 19 and j == 19 or i == 0 and j == 0):
+                        pygame.draw.rect(screen, black, maze[i][j])
+                        mazeColor[i][j] = 4
+                    neighborsCount = 0
+                #end for j
+            #end for i
+        if (mazeColorCheck == mazeColor): #stop loop once the colors stabilize
+            colorLogicCount += 1
+            if colorLogicCount == 5:
+                colorLogic = False
+        #end if colorLogic
+
 
         
         pygame.draw.circle(screen, black, (rect.x, rect.y), 10, 10)
