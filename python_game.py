@@ -60,19 +60,36 @@ def grid(w, h):
         hori = 0
         maze.append(line)
         mazeColor.append(colorRow)
-        # print(line)
 
     return maze
 
 grid(20, 20)
 
-# Set the red of the rectangle, Cameron Snoap
+# Allows for the ability to draw text on the screen (Kyle Taylor)
+def drawText(text, font, color, surface, x, y):
+    textobj = font.render(text, 1, color)
+    textrect = textobj.get_rect()
+    textrect.topleft = (x, y)
+    surface.blit(textobj, textrect)
+
+# Checks if the player has one or not (Kyle Taylor)
+def checkWin():
+    if (rect.x == 429 and rect.y == 429):
+        pygame.draw.rect(screen, black, pygame.Rect(84, 40, 276, 142))
+        pygame.draw.rect(screen, yellow, pygame.Rect(88, 44, 268, 134))
+        pygame.draw.rect(screen, black, pygame.Rect(95, 51, 250, 120))
+        pygame.draw.rect(screen, grey, pygame.Rect(99, 55, 242, 112))
+        drawText('You Win!', pygame.font.SysFont('impact', 65), black, screen, 104, 76)
+
+# Initialize colors (Cameron Snoap)
 white = (255, 255, 255)
 black = (0, 0, 0)
 red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
 orange = (255, 165, 0)
+yellow = (255, 255, 0)
+grey = (211, 211, 211)
 
 # Create a rectangle with the size 10x10 at the position (100, 100)
 rect = pygame.Rect(11, 11, 0, 0)
@@ -205,6 +222,9 @@ def gameloop():
         pygame.draw.circle(screen, black, (rect.x, rect.y), 10, 10)
         #draw player circle on the screen
         pygame.draw.circle(screen, red, (rect.x, rect.y), 5, 0)
+
+        # Checks if player has won
+        checkWin()
 
         # Update the screen
         pygame.display.update()
