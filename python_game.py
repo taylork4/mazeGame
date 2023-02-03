@@ -76,20 +76,35 @@ orange = (255, 165, 0)
 # Create a rectangle with the size 10x10 at the position (100, 100)
 rect = pygame.Rect(11, 11, 0, 0)
 
+#collision detection
+def collistion_detection(direction):
+    if (direction == "left" and screen.get_at((rect.x-22, rect.y)) == white):
+        return True
+    if (direction == "right" and screen.get_at((rect.x+22, rect.y)) == white):
+        return True
+    if (direction == "up" and screen.get_at((rect.x, rect.y-22)) == white):
+        return True
+    if (direction == "down" and screen.get_at((rect.x, rect.y+22)) == white):
+        return True
+    else:
+        return False
+    
+
 # Move the circle with the arrow keys, Cameron Snoap
 def handle_keys():
+    print(rect.x, rect.y) #testing
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
-        if rect.y > 22:
+        if rect.y > 22 and collistion_detection("up"):
             rect.y -= 22
     if keys[pygame.K_DOWN]:
-        if rect.y < 418:
+        if rect.y < 418 and collistion_detection("down"):
             rect.y += 22
     if keys[pygame.K_LEFT]:
-        if rect.x > 22:
+        if rect.x > 22 and collistion_detection("left"):
             rect.x -= 22
     if keys[pygame.K_RIGHT]:
-        if rect.x < 418:
+        if rect.x < 418 and collistion_detection("right"):
             rect.x += 22
 
 # Set the frame rate
