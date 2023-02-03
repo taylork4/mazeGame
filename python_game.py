@@ -174,6 +174,8 @@ def gameloop():
                     pygame.draw.rect(screen, orange, maze[i][j])
                 if (mazeColor[i][j] == 4):
                     pygame.draw.rect(screen, white, maze[i][j])
+                if (mazeColor[i][j] == 5):
+                    pygame.draw.rect(screen, black, maze[i][j])
 
         #color logic, Chase Kerr
         #this will turn off once the colors have stabilized, so the mouse killing of squares doesn't end up creating more
@@ -228,8 +230,10 @@ def gameloop():
             #end for i
         if (mazeColorCheck == mazeColor): #stop loop once the colors stabilize
             colorLogicCount += 1
-            if colorLogicCount == 5:
+            if colorLogicCount == 10:
                 colorLogic = False
+                mazeColor[0][0] = 5
+                mazeColor[19][19] = 5
         #end if colorLogic
 
 
