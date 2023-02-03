@@ -1,71 +1,90 @@
-'''
-***********************************************************************************************************************************
-Has a core game loop that is frame limited (10)
-***********************************************************************************************************************************
-Must have some mechanism for easily changing the framerate (be it a run time option, or a simple easy to change final variable) (10)
-***********************************************************************************************************************************
-Grow and draw a maze using the prescribed cellular automata method (15)
-***********************************************************************************************************************************
-Draw your maze at the framerate using squares for each cell (10)
-***********************************************************************************************************************************
-Must handle quit events, mouse events, and keyboard events. Clicking the close button of the game window should gracefully shutdown the game. 
-Clicking on a rectangle causes that rectangle to either become a new random color (if it is currently (0, 0, 0)), or become (0, 0, 0) if it has any color at all. 
-Note that (0, 0, 0) is an open cell and can be traversed. Any other color is a wall. (15)
-***********************************************************************************************************************************
-Must have a circle that represents the player. The player will start at the top left corner of the maze. 
-If there is currently a cell there, remove it before adding the player. 
-The player must be able to move through the maze corridors, but cannot go through walls, attempting to get to the lower right corner. 
-Making it to the lower right corner should result in a "win". 
-Keep in mind that mouse clicks can turn on and off a wall; this is not intended to be a fun game, merely a project to get the absolute basics working before we move forward with more complicated coding (20)
-***********************************************************************************************************************************
-Fully commented and documented code that includes headers for all public classes and methods. 
-If a method has a return type, or takes parameters, or throws exceptions, it should be documented. 
-Use the Google Style Guide (https://google.github.io/styleguide/) when you have questions. (10)
-***********************************************************************************************************************************
-You must demo your project in class on the due date for full points (10)
-'''
-'''
-Still need to do
-* mouse click to kill rectangle
-* collision detection for non-white rectangles
-* win condition for in bottom right corner
-* 
-'''
-import pygame
-import random
-import math
+""" The python_game.py program is a maze game designed with a simple goal. The player takes control of
+    a ball and is tasked with the adventurous mission of reaching the bottom right square. However, the
+    maze poses a major threat: Getting stuck. Due to the nature of the algorithm used to generate a random
+    maze, a path does not always exist from the starting point to the ending point. To offset this problem,
+    we have integrated the ability to turn squares off (or on) in the maze in order to navigate it fully.
+    When the player reaches the bottom-most square, they win!
+        author: Chase Kerr
+        author: Cameron Snoap
+        author: Kyle Taylor
+        version: 2/6/2023
+"""
+# ****************************************************************************************************************************************************************************
+""" Imports """
+# ****************
+import pygame, sys, random, math
+from pygame.locals import *
 
-# Initialize pygame
+# ****************************************************************************************************************************************************************************
+""" Initialize game parameters """
+# ****************
 pygame.init()
 maze = []
 mazeColor = []
-width = 22
-height = width
+_width = 22
+_height = _width
+_gridSize = 20
 
-# Set the display window size, Cameron Snoap, Chase Kerr
+# Sets up the frame rate
+clock = pygame.time.Clock()
+frame_rate = 10
+
+ # Set the display window size
 screen = pygame.display.set_mode((440, 440))
 
+# Rectangle for which player is oriented
+rect = pygame.Rect(11, 11, 0, 0)
+
+# Initialize colors
+white = (255, 255, 255)
+black = (0, 0, 0)
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
+orange = (255, 165, 0)
+yellow = (255, 255, 0)
+grey = (211, 211, 211)
+
+# ****************************************************************************************************************************************************************************
+""" The grid(w, h) function creates a grid based upon the desired width and height of the maze. Each individual cell
+    in the grid is also assigned to a randomized color.
+       ~ param w = Width of the grid
+       ~ param h = Height of the grid
+
+    Contributors: [Chase Kerr, Kyle Taylor]
+"""
+# ****************
 def grid(w, h):
     hori = 0
     vert = 0
+
+    # Nested loop for creating grid
     for i in range(0, w):
         line = []
         colorRow = []
         for j in range(0, h):
-            colo = random.randint(0, 4)
-            line.append(pygame.Rect(hori, vert, width, height))
+            colo = random.randint(0, 4) # Set color to a random color
+            line.append(pygame.Rect(hori, vert, _width, _height))
             colorRow.append(colo)
-            hori += width
-        vert += height
+            hori += _width
+        vert += _height
         hori = 0
         maze.append(line)
         mazeColor.append(colorRow)
 
-    return maze
 
-grid(20, 20)
-
-# Allows for the ability to draw text on the screen (Kyle Taylor)
+# ****************************************************************************************************************************************************************************
+""" The drawText(text, font, color, surface, x, y) function draws text on the screen.
+       ~ param text = Text that will display on screen
+       ~ param font = Font of the text
+       ~ param color = Color of the text
+       ~ param surface = Where the text will be displayed
+       ~ param x = Horizontal 'x' position of text on screen
+       ~ param y = Vertical 'y' position of text on screen
+        
+    Contributors: [Kyle Taylor]
+"""
+# ****************
 def drawText(text, font, color, surface, x, y):
     textobj = font.render(text, 1, color)
     textrect = textobj.get_rect()
@@ -81,18 +100,6 @@ def checkWin():
         pygame.draw.rect(screen, grey, pygame.Rect(99, 55, 242, 112))
         drawText('You Win!', pygame.font.SysFont('impact', 65), black, screen, 104, 76)
 
-# Initialize colors (Cameron Snoap)
-white = (255, 255, 255)
-black = (0, 0, 0)
-red = (255, 0, 0)
-green = (0, 255, 0)
-blue = (0, 0, 255)
-orange = (255, 165, 0)
-yellow = (255, 255, 0)
-grey = (211, 211, 211)
-
-# Create a rectangle with the size 10x10 at the position (100, 100)
-rect = pygame.Rect(11, 11, 0, 0)
 
 # Collision detection (Cameron Snoap)
 def collistion_detection(direction):
@@ -129,23 +136,15 @@ def handle_keys():
         if rect.x < 418 and collistion_detection("right"):
             rect.x += 22
 
-#kills a square (makes them disappear), Cameron Snoap, chaseKerr
+#kills a square (makes them disappear), Cameron Snoap
 def kill_square():
     mouse_presses = pygame.mouse.get_pressed()
     if mouse_presses[0]: #mouse left click
         x, y = get_mouse_pos()
         x = math.trunc(x/22)
         y = math.trunc(y/22)
-        if mazeColor[y][x] != 4:
-            pygame.draw.rect(screen, white, maze[y][x])
-            mazeColor[y][x] = 4
-        else:
-            pygame.draw.rect(screen, red, maze[y][x])
-            mazeColor[y][x] = 0
-
-# Set the frame rate
-clock = pygame.time.Clock()
-frame_rate = 10
+        pygame.draw.rect(screen, white, maze[y][x])
+        mazeColor[y][x] = 4
 
 
 def gameloop():
@@ -154,10 +153,14 @@ def gameloop():
     #color logic check variable
     colorLogic = True
     colorLogicCount = 0
+    grid(_gridSize, _gridSize)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        running = False
 
         kill_square()
         handle_keys()
@@ -165,7 +168,7 @@ def gameloop():
         # Clear the screen
         screen.fill((255, 255, 255))
 
-        # Draw the rectangle on the screen, Kyle Taylor
+        # Draw the rectangle on the screen (Kyle Taylor)
         for i in range(0, 20):
             for j in range(0,20):
                 if (mazeColor[i][j] == 0):
@@ -259,7 +262,6 @@ def gameloop():
     pygame.quit()
 
 def main():
-
     gameloop()
 
 if (__name__ == "__main__"):
