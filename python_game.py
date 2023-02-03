@@ -129,15 +129,19 @@ def handle_keys():
         if rect.x < 418 and collistion_detection("right"):
             rect.x += 22
 
-#kills a square (makes them disappear), Cameron Snoap
+#kills a square (makes them disappear), Cameron Snoap, chaseKerr
 def kill_square():
     mouse_presses = pygame.mouse.get_pressed()
     if mouse_presses[0]: #mouse left click
         x, y = get_mouse_pos()
         x = math.trunc(x/22)
         y = math.trunc(y/22)
-        pygame.draw.rect(screen, white, maze[y][x])
-        mazeColor[y][x] = 4
+        if mazeColor[y][x] != 4:
+            pygame.draw.rect(screen, white, maze[y][x])
+            mazeColor[y][x] = 4
+        else:
+            pygame.draw.rect(screen, red, maze[y][x])
+            mazeColor[y][x] = 0
 
 # Set the frame rate
 clock = pygame.time.Clock()
