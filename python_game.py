@@ -200,8 +200,12 @@ def killSquare():
         x, y = getMousePos()
         x = math.trunc(x/22)
         y = math.trunc(y/22)
-        pygame.draw.rect(screen, white, maze[y][x])
-        mazeColor[y][x] = 4
+        if (mazeColor[y][x] == 4):
+            pygame.draw.rect(screen, red, maze[y][x])
+            mazeColor[y][x] = 0
+        else:
+            pygame.draw.rect(screen, white, maze[y][x])
+            mazeColor[y][x] = 4
 
 # ****************************************************************************************************************************************************************************
 """ The colorLogic(cl) function is responsible for dispersing the colors for the maze. The maze is auto-generated in a randomized
@@ -278,7 +282,7 @@ def colorLogic(cl):
             #Loop stops as soon as the colors stabilize
             if (mazeColorCheck == mazeColor):
                 colorLogicCount += 1
-                if colorLogicCount == 10:
+                if colorLogicCount == 30:
                     cl = False
     mazeColor[0][0] = 5
     mazeColor[19][19] = 5
