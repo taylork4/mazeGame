@@ -282,7 +282,7 @@ def colorLogic(cl):
             #Loop stops as soon as the colors stabilize
             if (mazeColorCheck == mazeColor):
                 colorLogicCount += 1
-                if colorLogicCount == 30:
+                if colorLogicCount == 20:
                     cl = False
     mazeColor[0][0] = 5
     mazeColor[19][19] = 5
